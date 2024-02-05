@@ -3,20 +3,21 @@ import sys
 from dataclasses import dataclass
 
 from catboost import CatBoostRegressor
-from sklearn.ensemble import(AdaBoostRegressor,
+from sklearn.ensemble import (
+    AdaBoostRegressor,
     GradientBoostingRegressor,
-    RandomForestRegressor)
-
-from sklearn.linear_model import (LinearRegression, LassoCV, RidgeCV)
+    RandomForestRegressor,
+)
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
-from sklearn.tree import DecisionTreeRegressor
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
 from xgboost import XGBRegressor
 
-from src.logger import logging
 from src.exception import CustomException
-from src.utils import save_object
-from src.utils import evaluate_models
+from src.logger import logging
+
+from src.utils import save_object,evaluate_models
 
 @dataclass
 class ModelTrainerConfig:
@@ -26,18 +27,18 @@ class ModelTrainer:
     def __init__(self):
         self.model_trainer_config=ModelTrainerConfig()
 
+
     def initiate_model_trainer(self,train_array,test_array):
         try:
-            logging.info("splitting training and testing data")
+            logging.info("Split training and test input data")
             X_train,y_train,X_test,y_test=(
                 train_array[:,:-1],
                 train_array[:,-1],
                 test_array[:,:-1],
                 test_array[:,-1]
-
-
             )
-            models={"Random Forest": RandomForestRegressor(),
+            models = {
+                "Random Forest": RandomForestRegressor(),
                 "Decision Tree": DecisionTreeRegressor(),
                 "Gradient Boosting": GradientBoostingRegressor(),
                 "Linear Regression": LinearRegression(),
@@ -82,6 +83,7 @@ class ModelTrainer:
                 }
                 
             }
+
             model_report:dict=evaluate_models(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
                                              models=models,param=params)
             
